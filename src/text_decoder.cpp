@@ -4,7 +4,9 @@
 #include "stat_multiplatform.h"
 
 #include <cmath>
+#include <cstring>
 #include <cstdio>
+#include <fstream>
 #include <fcntl.h>
 #include <ggml-impl.h>
 

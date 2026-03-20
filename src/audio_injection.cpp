@@ -1,5 +1,6 @@
 #include "audio_injection.h"
 
+#include <cstring>
 #include <algorithm>
 
 namespace qwen3_asr {

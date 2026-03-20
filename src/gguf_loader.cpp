@@ -3,6 +3,7 @@
 #include "stat_multiplatform.h"
 
 #include <cstdio>
+#include <cstring>
 #include <fstream>
 #include <fcntl.h>
 #include <ggml-impl.h>

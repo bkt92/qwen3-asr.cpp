@@ -1,6 +1,8 @@
 #include "audio_encoder.h"
 #include "timing.h"
 
+#include <cmath>
+#include <cstring>
 #include <algorithm>
 #include <ggml-impl.h>
 
