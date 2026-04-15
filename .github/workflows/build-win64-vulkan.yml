@@ -7,6 +7,16 @@ on:
     pull_request:
         branches: [main]
     workflow_dispatch:
+        inputs:
+            create_release:
+                description: "Create a GitHub Release"
+                required: false
+                default: false
+                type: boolean
+            tag_name:
+                description: "Release tag (required if create_release is true)"
+                required: false
+                type: string
 
 jobs:
     build:
@@ -41,7 +51,7 @@ jobs:
 
     release:
         needs: build
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.create_release == true)
         runs-on: ubuntu-latest
         permissions:
             contents: write
@@ -57,7 +67,21 @@ jobs:
                   cd bin
                   zip -r ../qwen3-asr-win64-vulkan.zip .
 
-            - name: Upload to release
+            - name: Determine tag
+              id: tag
+              run: |
+                  if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+                      echo "value=${{ github.ref_name }}" >> "$GITHUB_OUTPUT"
+                  elif [[ -n "${{ inputs.tag_name }}" ]]; then
+                      echo "value=${{ inputs.tag_name }}" >> "$GITHUB_OUTPUT"
+                  else
+                      echo "value=v0.1.1-$(date +%Y%m%d%H%M%S)" >> "$GITHUB_OUTPUT"
+                  fi
+
+            - name: Create release
               uses: softprops/action-gh-release@v2
               with:
+                  tag_name: ${{ steps.tag.outputs.value }}
+                  name: "Build ${{ steps.tag.outputs.value }}"
+                  body: "Automated Win64 Vulkan build from ${{ github.sha }}"
                   files: qwen3-asr-win64-vulkan.zip
