@@ -77,6 +77,10 @@ target_include_directories(qwen3-asr PRIVATE
 
 target_link_libraries(qwen3-asr PRIVATE ggml Threads::Threads)
 
+if (GGML_VULKAN)
+    target_link_libraries(qwen3-asr PRIVATE ggml-vulkan)
+endif()
+
 # ==================================== CLI ====================================
 add_executable(qwen3-asr-cli
         cli/main.cpp
@@ -90,6 +94,10 @@ target_include_directories(qwen3-asr-cli PRIVATE
 )
 
 target_link_libraries(qwen3-asr-cli PRIVATE qwen3-asr ggml Threads::Threads)
+
+if (GGML_VULKAN)
+    target_link_libraries(qwen3-asr-cli PRIVATE ggml-vulkan)
+endif()
 
 
 # ==================================== Test  ====================================
